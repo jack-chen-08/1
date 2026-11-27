@@ -1,0 +1,129 @@
+==============================================================
+AC1 创建课期 → 活动模块收到 1 次创建，event_id 回填
+==============================================================
+
+### POST /api/admin/academy/courses/b3b0c68b-9fed-4c8d-b18a-5f55a45d24b9/sessions -> 201
+{
+  "id": "3ed7c01e-9909-4a5c-8567-379e3b056db1",
+  "event_id": "evt-f93338ad-67c6-4f52-8a90-cb757b3aa486",
+  "sync_status": "synced",
+  "status": "scheduled"
+}
+
+### 活动模块收到
+[
+  {
+    "seq": 1,
+    "op": "create",
+    "event_id": "evt-f93338ad-67c6-4f52-8a90-cb757b3aa486",
+    "payload": {
+      "type": "academy_course",
+      "title": "产业资源对接实战 第 3 期",
+      "starts_at": "2026-12-10T01:00:00+00:00",
+      "ends_at": "2026-12-10T04:00:00+00:00",
+      "venue_name": "示例厅 A",
+      "capacity": 40,
+      "waitlist_capacity": 10,
+      "requires_approval": false,
+      "audience": "members_only",
+      "org_id": "103fdbbd-e5ad-4034-98d8-a067510e0456",
+      "site_id": ""
+    }
+  }
+]
+
+==============================================================
+AC2 活动模块 500 → 课期仍保存、sync_status=failed、重试队列有记录
+==============================================================
+
+### POST -> 201
+{
+  "event_id": null,
+  "sync_status": "failed",
+  "status": "scheduled"
+}
+
+### 重试队列
+{
+  "items": [
+    {
+      "id": "694f6c64-4de5-4bbd-bbb7-f22485f12719",
+      "session_id": "1ff3236f-8818-42bb-8f0d-9ecb0141f59a",
+      "operation": "create",
+      "attempts": 1,
+      "max_attempts": 5,
+      "status": "pending",
+      "next_attempt_at": "2026-11-27T14:42:26.250088+00:00",
+      "last_error": "ActivityErrorLike: mock activity error 500"
+    }
+  ]
+}
+
+==============================================================
+AC3 名额改到小于已报名人数 → 422，并给出已报名数
+==============================================================
+
+### PATCH capacity=10 (已报名 12) -> 422
+{
+  "detail": {
+    "code": "capacity_below_enrolled",
+    "message": "capacity cannot be lower than enrolled count",
+    "enrolled": 12
+  }
+}
+
+==============================================================
+AC4 audience 三取值 → 活动可见范围映射
+==============================================================
+member_only  -> members_only
+public       -> public
+invite_only  -> closed_door
+
+==============================================================
+补充 1 改场地/名额 → PATCH 对应活动（带 event_id）
+==============================================================
+
+### PATCH -> 200
+{
+  "event_id": "evt-f93338ad-67c6-4f52-8a90-cb757b3aa486",
+  "activity_last_patch": {
+    "seq": 5,
+    "op": "patch",
+    "event_id": "evt-f93338ad-67c6-4f52-8a90-cb757b3aa486",
+    "payload": {
+      "type": "academy_course",
+      "title": "产业资源对接实战 第 3 期",
+      "starts_at": "2026-12-10T01:00:00+00:00",
+      "ends_at": "2026-12-10T04:00:00+00:00",
+      "venue_name": "示例厅 B",
+      "capacity": 60,
+      "waitlist_capacity": 10,
+      "requires_approval": false,
+      "audience": "members_only",
+      "org_id": "103fdbbd-e5ad-4034-98d8-a067510e0456",
+      "site_id": ""
+    }
+  }
+}
+
+==============================================================
+补充 2 取消 → 状态 cancelled + 事件入发件箱；重复取消 409
+==============================================================
+
+### POST cancel -> 200
+{
+  "status": "cancelled"
+}
+
+### 重复 cancel -> 409
+{
+  "detail": {
+    "code": "invalid_state",
+    "message": "session already cancelled"
+  }
+}
+
+==============================================================
+活动模块调用总计: 5 次 (create=4, patch=1)
+跑完时间(UTC): 2026-11-27T14:41:56.302438+00:00
+==============================================================
