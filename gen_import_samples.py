@@ -347,10 +347,14 @@ def build(seed: int = DEFAULT_SEED) -> Dict[str, Any]:
         interactions[idx]["member_id"] = mid
         note("ORPHAN_INTERACTION", "interactions.csv", [irow(idx)], "member_id", "会员号不在名册：%s" % mid)
 
-    for idx, idno in ((100, "110101199003071234"), (356, "310101198512123456"),
-                      (612, "440301199201019876"), (906, "510101198808082345"), (1240, "330101199509095432")):
-        interactions[idx]["content"] += "，客户留了证件号 " + idno
-        note("ID_NUMBER_IN_BODY", "interactions.csv", [irow(idx)], "content", "自由文本含 18 位证件号：%s" % idno)
+    # 正文证件号一律用「不存在的行政区划码 999999 + 1900-01-01 出生日期」生成：
+    # 形式上仍是 18 位（映射器可检出），内容上可自证虚构（999999 不在国家统计局区划码内）。
+    for idx, idno in ((100, "999999190001010015"), (356, "999999190001010023"),
+                      (612, "999999190001010031"), (906, "99999919000101004X"),
+                      (1240, "999999190001010058")):
+        interactions[idx]["content"] += "，客户留了证件号" + idno + "（虚构示例号，区划码 999999 不存在）"
+        note("ID_NUMBER_IN_BODY", "interactions.csv", [irow(idx)], "content",
+             "自由文本含 18 位证件号：%s（虚构：区划码 999999 非真实区划，出生日期 1900-01-01）" % idno)
 
     note("BLANK_ROW", "interactions.csv", [row_of(INTERACTIONS_BLANK_AFTER, 1) + 1], "-", "数据区中间的空行")
 

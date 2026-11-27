@@ -9,8 +9,8 @@
 | leases.xlsx | `5c652c4d6b6d8ea2` | `5c652c4d6b6d8ea2` | 一致 |
 | unit_inventory.csv | `e9ed4f8897dd9d65` | `e9ed4f8897dd9d65` | 一致 |
 | activities.csv | `c90ab11d2934c639` | `c90ab11d2934c639` | 一致 |
-| interactions.csv | `e5710fc412e5249a` | `e5710fc412e5249a` | 一致 |
-| answer_key.json | `479b1359058f5570` | `479b1359058f5570` | 一致 |
+| interactions.csv | `10201c228ef208db` | `10201c228ef208db` | 一致 |
+| answer_key.json | `85c0fc187ae98ecf` | `85c0fc187ae98ecf` | 一致 |
 
 比对口径：CSV 按解析后的单元格值序列做 sha256；xlsx 按单元格值 JSON 做 sha256；answer_key.json 按文件字节。
 

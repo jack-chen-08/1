@@ -47,10 +47,13 @@ xlsx 只写值不加时间戳；`answer_key.json` 无生成时间字段。反证
 ## 3. 虚构规则（对应验收 3）
 
 - 企业名 100% 含「示例」前缀，120 个名称互不重复（断言：`test_ac3_company_names_all_fiction`）
-- 手机号统一为 `1[3-9]0000####`，中间 4 位固定 `0000`（断言：`test_ac3_mobile_mid_four_zeros`，缺陷行由 answer_key 显式豁免）
+- 手机号统一为 `1[3-9]\d0000\d{4}`（11 位，第 4–7 位固定 `0000`；断言：`test_ac3_mobile_mid_four_zeros`，缺陷行由 answer_key 显式豁免）
 - 邮箱统一 `@example.com` / `@example.net`
 - 信用代码按 GB 32100-2015 算法生成合法校验位（缺陷行除外）
 - 人员姓名由内置姓氏/名字表组合，不含任何真实个人
+- **正文证件号（`ID_NUMBER_IN_BODY` 的 5 条）一律为 `999999` + `19000101` + 顺序码 + 校验位**：
+  `999999` 不属于国家统计局任何行政区划码、`19000101` 无可存活个人，且原文同句标注「虚构示例号」，
+  故形式上可被映射器检出、内容上不可能对应任何真实自然人；同样 5 条在 `answer_key.json` 中逐条登记
 
 ## 4. 预埋缺陷清单（对应验收 2）
 
@@ -74,7 +77,7 @@ xlsx 只写值不加时间戳；`answer_key.json` 无生成时间字段。反证
 | `SITE_CONFLICT` | 场地冲突（同单元跨场地同时占用） | 1 | leases.xlsx · site_id |
 | `UNMATCHED_ATTENDEE` | 参与人不在名册 | 3 | activities.csv |
 | `ORPHAN_INTERACTION` | 孤儿互动（会员号不存在） | 4 | interactions.csv |
-| `ID_NUMBER_IN_BODY` | 自由文本含 18 位证件号 | 5 | interactions.csv · content |
+| `ID_NUMBER_IN_BODY` | 自由文本含 18 位证件号（虚构号：区划码 `999999`、生于 1900-01-01，同句标注「虚构示例号」） | 5 | interactions.csv · content |
 | **合计** | | **69** | |
 
 ## 5. 映射器与预演（对应验收 4）
