@@ -1,0 +1,667 @@
+{
+ "seed": 20260101,
+ "files": {
+  "members": "members.csv",
+  "contracts": "contracts.csv",
+  "leases": "leases.xlsx",
+  "units": "unit_inventory.csv",
+  "activities": "activities.csv",
+  "interactions": "interactions.csv"
+ },
+ "row_convention": "文件物理行号（1 基，含表头与标题行）",
+ "counts": {
+  "BLANK_ROW": 3,
+  "CREDIT_CODE_CHECKSUM": 5,
+  "CROSS_FILE_NAME_VARIANT": 10,
+  "DUPLICATE_ROW_IN_FILE": 5,
+  "FULLWIDTH_CHAR": 4,
+  "ID_NUMBER_IN_BODY": 5,
+  "LEASE_OVERLAP": 2,
+  "MERGED_CELL": 2,
+  "MIXED_DATE_FORMAT": 9,
+  "ORPHAN_INTERACTION": 4,
+  "PHONE_FORMAT_VARIANT": 6,
+  "PHONE_SCIENTIFIC": 3,
+  "RENEWAL_CYCLE": 1,
+  "SITE_CONFLICT": 1,
+  "TITLE_ROW": 1,
+  "UNKNOWN_ENUM": 5,
+  "UNMATCHED_ATTENDEE": 3
+ },
+ "total": 69,
+ "defects": [
+  {
+   "code": "FULLWIDTH_CHAR",
+   "file": "members.csv",
+   "rows": [
+    9
+   ],
+   "field": "contact_name",
+   "detail": "联系人姓名含全角英文字符"
+  },
+  {
+   "code": "FULLWIDTH_CHAR",
+   "file": "members.csv",
+   "rows": [
+    90
+   ],
+   "field": "contact_name",
+   "detail": "联系人姓名含全角英文字符"
+  },
+  {
+   "code": "FULLWIDTH_CHAR",
+   "file": "members.csv",
+   "rows": [
+    165
+   ],
+   "field": "contact_name",
+   "detail": "联系人姓名含全角英文字符"
+  },
+  {
+   "code": "FULLWIDTH_CHAR",
+   "file": "members.csv",
+   "rows": [
+    253
+   ],
+   "field": "contact_name",
+   "detail": "联系人姓名含全角英文字符"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    13
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：'138 0000 1234'"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    44
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：'137-0000-5678'"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    131
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：'+86 13900002468'"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    207
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：' 13500001111'"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    266
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：'(136)00009999'"
+  },
+  {
+   "code": "PHONE_FORMAT_VARIANT",
+   "file": "members.csv",
+   "rows": [
+    290
+   ],
+   "field": "mobile",
+   "detail": "手机号非标准 11 位写法：'150.0000.2222'"
+  },
+  {
+   "code": "PHONE_SCIENTIFIC",
+   "file": "members.csv",
+   "rows": [
+    62
+   ],
+   "field": "mobile",
+   "detail": "单元格被转成科学计数法：1.3800001234E+10"
+  },
+  {
+   "code": "PHONE_SCIENTIFIC",
+   "file": "members.csv",
+   "rows": [
+    176
+   ],
+   "field": "mobile",
+   "detail": "单元格被转成科学计数法：1.3900005678E+10"
+  },
+  {
+   "code": "PHONE_SCIENTIFIC",
+   "file": "members.csv",
+   "rows": [
+    235
+   ],
+   "field": "mobile",
+   "detail": "单元格被转成科学计数法：1.5100001111E+10"
+  },
+  {
+   "code": "CREDIT_CODE_CHECKSUM",
+   "file": "members.csv",
+   "rows": [
+    183
+   ],
+   "field": "credit_code",
+   "detail": "校验位不符：915787976YJTQDJJAX → 915787976YJTQDJJA0"
+  },
+  {
+   "code": "CREDIT_CODE_CHECKSUM",
+   "file": "members.csv",
+   "rows": [
+    202
+   ],
+   "field": "credit_code",
+   "detail": "校验位不符：914485299UP3N14E44 → 914485299UP3N14E40"
+  },
+  {
+   "code": "CREDIT_CODE_CHECKSUM",
+   "file": "members.csv",
+   "rows": [
+    224
+   ],
+   "field": "credit_code",
+   "detail": "校验位不符：91521672WGB6F0XAR5 → 91521672WGB6F0XAR0"
+  },
+  {
+   "code": "CREDIT_CODE_CHECKSUM",
+   "file": "members.csv",
+   "rows": [
+    248
+   ],
+   "field": "credit_code",
+   "detail": "校验位不符：917841406QBJ4UAUDF → 917841406QBJ4UAUD0"
+  },
+  {
+   "code": "CREDIT_CODE_CHECKSUM",
+   "file": "members.csv",
+   "rows": [
+    277
+   ],
+   "field": "credit_code",
+   "detail": "校验位不符：91380912GXXK83ALHF → 91380912GXXK83ALH0"
+  },
+  {
+   "code": "UNKNOWN_ENUM",
+   "file": "members.csv",
+   "rows": [
+    107
+   ],
+   "field": "member_status",
+   "detail": "非允许枚举值：'ACTIVE'"
+  },
+  {
+   "code": "UNKNOWN_ENUM",
+   "file": "members.csv",
+   "rows": [
+    120
+   ],
+   "field": "member_status",
+   "detail": "非允许枚举值：'Active'"
+  },
+  {
+   "code": "UNKNOWN_ENUM",
+   "file": "members.csv",
+   "rows": [
+    223
+   ],
+   "field": "member_status",
+   "detail": "非允许枚举值：'冻结'"
+  },
+  {
+   "code": "UNKNOWN_ENUM",
+   "file": "members.csv",
+   "rows": [
+    230
+   ],
+   "field": "member_status",
+   "detail": "非允许枚举值：'pending'"
+  },
+  {
+   "code": "UNKNOWN_ENUM",
+   "file": "members.csv",
+   "rows": [
+    238
+   ],
+   "field": "member_status",
+   "detail": "非允许枚举值：'active  '"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "members.csv",
+   "rows": [
+    35
+   ],
+   "field": "created_at",
+   "detail": "斜杠日期 2024/06/01"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "members.csv",
+   "rows": [
+    160
+   ],
+   "field": "created_at",
+   "detail": "点号日期 2024.06.02"
+  },
+  {
+   "code": "TITLE_ROW",
+   "file": "contracts.csv",
+   "rows": [
+    1
+   ],
+   "field": "-",
+   "detail": "表头之前多出一行标题：合同台账导出（示例数据）"
+  },
+  {
+   "code": "BLANK_ROW",
+   "file": "contracts.csv",
+   "rows": [
+    2
+   ],
+   "field": "-",
+   "detail": "标题行与表头之间的空白行"
+  },
+  {
+   "code": "DUPLICATE_ROW_IN_FILE",
+   "file": "contracts.csv",
+   "rows": [
+    7,
+    164
+   ],
+   "field": "整行",
+   "detail": "与第 7 行完全重复（contract_id=C0004）"
+  },
+  {
+   "code": "DUPLICATE_ROW_IN_FILE",
+   "file": "contracts.csv",
+   "rows": [
+    35,
+    165
+   ],
+   "field": "整行",
+   "detail": "与第 35 行完全重复（contract_id=C0032）"
+  },
+  {
+   "code": "DUPLICATE_ROW_IN_FILE",
+   "file": "contracts.csv",
+   "rows": [
+    66,
+    166
+   ],
+   "field": "整行",
+   "detail": "与第 66 行完全重复（contract_id=C0063）"
+  },
+  {
+   "code": "DUPLICATE_ROW_IN_FILE",
+   "file": "contracts.csv",
+   "rows": [
+    101,
+    167
+   ],
+   "field": "整行",
+   "detail": "与第 101 行完全重复（contract_id=C0098）"
+  },
+  {
+   "code": "DUPLICATE_ROW_IN_FILE",
+   "file": "contracts.csv",
+   "rows": [
+    132,
+    168
+   ],
+   "field": "整行",
+   "detail": "与第 132 行完全重复（contract_id=C0129）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    9
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例锦程装饰公司（名册为 示例锦程装饰股份有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    23
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例锦程纺织公司（名册为 示例锦程纺织股份有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    38
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例中润环保公司（名册为 示例中润环保有限责任公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    52
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例聚源医疗器械公司（名册为 示例聚源医疗器械有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    70
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例立信环保公司（名册为 示例立信环保股份有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    83
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例德昌供应链公司（名册为 示例德昌供应链有限责任公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    96
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例博盛商贸公司（名册为 示例博盛商贸有限责任公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    109
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例立信智能科技公司（名册为 示例立信智能科技有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    125
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例诚达化工公司（名册为 示例诚达化工股份有限公司）"
+  },
+  {
+   "code": "CROSS_FILE_NAME_VARIANT",
+   "file": "contracts.csv",
+   "rows": [
+    141
+   ],
+   "field": "company_name",
+   "detail": "与名册不一致：示例宏远食品公司（名册为 示例宏远食品有限公司）"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "contracts.csv",
+   "rows": [
+    14
+   ],
+   "field": "sign_date",
+   "detail": "非 ISO 日期：2024/07/01"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "contracts.csv",
+   "rows": [
+    59
+   ],
+   "field": "sign_date",
+   "detail": "非 ISO 日期：20240702"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "contracts.csv",
+   "rows": [
+    114
+   ],
+   "field": "sign_date",
+   "detail": "非 ISO 日期：2024.07.03"
+  },
+  {
+   "code": "LEASE_OVERLAP",
+   "file": "leases.xlsx",
+   "rows": [
+    42,
+    43
+   ],
+   "field": "start_date",
+   "detail": "单元 U0041 租期重叠（2025-01-04 止 / 2025-01-04 起）"
+  },
+  {
+   "code": "LEASE_OVERLAP",
+   "file": "leases.xlsx",
+   "rows": [
+    97,
+    98
+   ],
+   "field": "start_date",
+   "detail": "单元 U0096 租期重叠（2026-03-23 止 / 2026-03-23 起）"
+  },
+  {
+   "code": "RENEWAL_CYCLE",
+   "file": "leases.xlsx",
+   "rows": [
+    52,
+    53,
+    54
+   ],
+   "field": "renew_from",
+   "detail": "续签链成环：L0051→L0053→L0052→L0051"
+  },
+  {
+   "code": "SITE_CONFLICT",
+   "file": "leases.xlsx",
+   "rows": [
+    72,
+    73
+   ],
+   "field": "site_id",
+   "detail": "单元 U0072 被两个场地同时占用（site_05 / site_06）"
+  },
+  {
+   "code": "MERGED_CELL",
+   "file": "leases.xlsx",
+   "rows": [
+    121,
+    122
+   ],
+   "field": "company_name",
+   "detail": "企业名称列单元格合并：B121:B122"
+  },
+  {
+   "code": "MERGED_CELL",
+   "file": "leases.xlsx",
+   "rows": [
+    131,
+    133
+   ],
+   "field": "company_name",
+   "detail": "企业名称列单元格合并：B131:B133"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "leases.xlsx",
+   "rows": [
+    22
+   ],
+   "field": "start_date",
+   "detail": "非 ISO 日期：2024/02/01"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "leases.xlsx",
+   "rows": [
+    80
+   ],
+   "field": "start_date",
+   "detail": "非 ISO 日期：20240202"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "leases.xlsx",
+   "rows": [
+    135
+   ],
+   "field": "start_date",
+   "detail": "非 ISO 日期：2024.02.03"
+  },
+  {
+   "code": "UNMATCHED_ATTENDEE",
+   "file": "activities.csv",
+   "rows": [
+    14
+   ],
+   "field": "attendee_mobile",
+   "detail": "参与人不在名册：欧阳锋 / 13100007777"
+  },
+  {
+   "code": "UNMATCHED_ATTENDEE",
+   "file": "activities.csv",
+   "rows": [
+    335
+   ],
+   "field": "attendee_mobile",
+   "detail": "参与人不在名册：慕容复 / 13200008888"
+  },
+  {
+   "code": "UNMATCHED_ATTENDEE",
+   "file": "activities.csv",
+   "rows": [
+    704
+   ],
+   "field": "attendee_mobile",
+   "detail": "参与人不在名册：独孤求败 / 13300009999"
+  },
+  {
+   "code": "MIXED_DATE_FORMAT",
+   "file": "activities.csv",
+   "rows": [
+    224
+   ],
+   "field": "session_date",
+   "detail": "非 ISO 日期：2024/05/01"
+  },
+  {
+   "code": "BLANK_ROW",
+   "file": "activities.csv",
+   "rows": [
+    452
+   ],
+   "field": "-",
+   "detail": "数据区中间的空行"
+  },
+  {
+   "code": "ORPHAN_INTERACTION",
+   "file": "interactions.csv",
+   "rows": [
+    60
+   ],
+   "field": "member_id",
+   "detail": "会员号不在名册：M9001"
+  },
+  {
+   "code": "ORPHAN_INTERACTION",
+   "file": "interactions.csv",
+   "rows": [
+    406
+   ],
+   "field": "member_id",
+   "detail": "会员号不在名册：M9002"
+  },
+  {
+   "code": "ORPHAN_INTERACTION",
+   "file": "interactions.csv",
+   "rows": [
+    779
+   ],
+   "field": "member_id",
+   "detail": "会员号不在名册：M9003"
+  },
+  {
+   "code": "ORPHAN_INTERACTION",
+   "file": "interactions.csv",
+   "rows": [
+    1313
+   ],
+   "field": "member_id",
+   "detail": "会员号不在名册：M9004"
+  },
+  {
+   "code": "ID_NUMBER_IN_BODY",
+   "file": "interactions.csv",
+   "rows": [
+    102
+   ],
+   "field": "content",
+   "detail": "自由文本含 18 位证件号：110101199003071234"
+  },
+  {
+   "code": "ID_NUMBER_IN_BODY",
+   "file": "interactions.csv",
+   "rows": [
+    358
+   ],
+   "field": "content",
+   "detail": "自由文本含 18 位证件号：310101198512123456"
+  },
+  {
+   "code": "ID_NUMBER_IN_BODY",
+   "file": "interactions.csv",
+   "rows": [
+    614
+   ],
+   "field": "content",
+   "detail": "自由文本含 18 位证件号：440301199201019876"
+  },
+  {
+   "code": "ID_NUMBER_IN_BODY",
+   "file": "interactions.csv",
+   "rows": [
+    908
+   ],
+   "field": "content",
+   "detail": "自由文本含 18 位证件号：510101198808082345"
+  },
+  {
+   "code": "ID_NUMBER_IN_BODY",
+   "file": "interactions.csv",
+   "rows": [
+    1243
+   ],
+   "field": "content",
+   "detail": "自由文本含 18 位证件号：330101199509095432"
+  },
+  {
+   "code": "BLANK_ROW",
+   "file": "interactions.csv",
+   "rows": [
+    1002
+   ],
+   "field": "-",
+   "detail": "数据区中间的空行"
+  }
+ ]
+}
