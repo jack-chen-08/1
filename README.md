@@ -82,15 +82,19 @@ xlsx 只写值不加时间戳；`answer_key.json` 无生成时间字段。反证
 
 ## 5. 映射器与预演（对应验收 4）
 
-`mappers/` 下五个映射器各管一类来源，共用 `mappers/base.py` 的读取与通用校验：
+`mappers.py`（仓库根目录，**单文件**，无子目录）内含五个校验入口，共用同一份读取与通用校验实现，
+`import mappers` 即可用；`python -c "import mappers; print(len(mappers.run_all('samples')))"` 输出 69：
 
-| 模块 | 覆盖来源 | 检出代码 |
+| 函数（均在 `mappers.py`） | 覆盖来源 | 检出代码 |
 |---|---|---|
-| `mappers/members.py` | 会员名册 | FULLWIDTH_CHAR / PHONE_FORMAT_VARIANT / PHONE_SCIENTIFIC / CREDIT_CODE_CHECKSUM / UNKNOWN_ENUM / MIXED_DATE_FORMAT |
-| `mappers/contracts.py` | 合同台账 | TITLE_ROW / BLANK_ROW / DUPLICATE_ROW_IN_FILE / CROSS_FILE_NAME_VARIANT / MIXED_DATE_FORMAT |
-| `mappers/leases.py` | 租约台账 | MERGED_CELL / LEASE_OVERLAP / RENEWAL_CYCLE / SITE_CONFLICT / MIXED_DATE_FORMAT |
-| `mappers/activities.py` | 活动记录 | UNMATCHED_ATTENDEE / MIXED_DATE_FORMAT / BLANK_ROW |
-| `mappers/interactions.py` | 互动记录 | ORPHAN_INTERACTION / ID_NUMBER_IN_BODY / BLANK_ROW |
+| `validate_members()` | 会员名册 members.csv | FULLWIDTH_CHAR / PHONE_FORMAT_VARIANT / PHONE_SCIENTIFIC / CREDIT_CODE_CHECKSUM / UNKNOWN_ENUM / MIXED_DATE_FORMAT |
+| `validate_contracts()` | 合同台账 contracts.csv | TITLE_ROW / BLANK_ROW / DUPLICATE_ROW_IN_FILE / CROSS_FILE_NAME_VARIANT / MIXED_DATE_FORMAT |
+| `validate_leases()` | 租约台账 leases.xlsx | MERGED_CELL / LEASE_OVERLAP / RENEWAL_CYCLE / SITE_CONFLICT / MIXED_DATE_FORMAT |
+| `validate_activities()` | 活动记录 activities.csv | UNMATCHED_ATTENDEE / MIXED_DATE_FORMAT / BLANK_ROW |
+| `validate_interactions()` | 互动记录 interactions.csv | ORPHAN_INTERACTION / ID_NUMBER_IN_BODY / BLANK_ROW |
+
+公共件（同文件内）：`Issue`、`make()`、`read_csv()`、`read_xlsx()`、`check_mobile()`、`check_credit_code()`、
+`check_enum()`、`check_iso_date()`、`check_duplicates()`、`check_fullwidth()`、`cc_check_char()`、`RE_ID_CARD`。
 
 预演命令与实测输出（69/69 命中、0 误报）：
 
@@ -110,7 +114,7 @@ answer_key 预埋：69 条 / 映射器检出：69 条
 ```
 gen_import_samples.py   生成器（单文件，可独立运行）
 check_samples.py        五映射器预演 + 与 answer_key 逐条比对
-mappers/                五个映射器 + 公共件
+mappers.py              五个校验入口 + 公共件（单文件，根目录）
 tests/                  AC1–AC4 断言（pytest）
 samples/                默认 seed 的样例产出（已提交，便于直接查看）
 reports/                AC1–AC4 实测输出留档

@@ -105,3 +105,29 @@ def test_volume(samples):
     assert len(data["activities"]) == 900
     assert len({a["session_id"] for a in data["activities"]}) == 60
     assert len(data["interactions"]) == 1500
+
+
+def test_ac3_phone_exclusions_are_registered(samples):
+    """AC3 的豁免必须可核验：9 条豁免行确实违反规则，其余 291 行全部合规。
+
+    证明「豁免」不是静默放过——每条豁免都在 answer_key 中登记（问题代码 + 物理行号），
+    且被豁免的行拿严格规则去跑确实不通过；反过来，不符合严格规则的行也不能多于/少于登记数。
+    """
+    folder, data = samples
+    pat = re.compile(r"^1[3-9]\d0000\d{4}$")
+    with open(os.path.join(folder, "members.csv"), encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+
+    registered = {d["rows"][0] for d in data["defects"]
+                  if d["code"] in ("PHONE_FORMAT_VARIANT", "PHONE_SCIENTIFIC")
+                  and d["file"] == "members.csv"}
+    assert len(registered) == 9, "answer_key 登记的手机号缺陷行应为 9 条，实为 %d" % len(registered)
+
+    violations = {i for i, r in enumerate(rows, start=2) if not pat.match(r["mobile"])}
+    assert violations == registered, (
+        "实际违反虚构规则的行 %s 与 answer_key 登记的豁免行 %s 不一致"
+        % (sorted(violations), sorted(registered)))
+    assert len(rows) - len(violations) == 291, "非缺陷手机号应为 291 条"
+    for i, r in enumerate(rows, start=2):
+        if i in violations:
+            assert not pat.match(r["mobile"]), "第 %d 行被登记为缺陷，却符合严格规则" % i
