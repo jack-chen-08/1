@@ -1,0 +1,161 @@
+version: 1
+
+# 商机（opportunity）权限矩阵 · 唯一真源
+#
+# 口径说明
+#   1. 所有角色一律先受 org 约束（只看本 org），矩阵不提供跨 org 的口子。
+#   2. site_scope:
+#        all_in_org  —— 不受场地限制（org_admin）
+#        own_sites   —— 仅本人在 IAM 中挂的 site_ids
+#   3. owner_scope:
+#        all         —— 本范围内全部商机
+#        own         —— 只限 owner_id = 本人（sales）
+#   4. stage_in    —— 只读该阶段集合（finance 只读 stage=won）
+#   5. amounts.visible=false 时：详情/列表金额字段返回 null 且附 amount_hidden=true；
+#      列表 summary 直接不返回 amount_total_fen / weighted_total_fen 两个键。
+#   6. advance_stage:
+#        as_owner: 本人是负责人即可推进
+#        by_role:  该角色本身即有权推进他人商机
+#      规则原文：阶段推进允许负责人与 sales_lead。
+#   7. force_create / delete / merge：规则原文只授予 sales_lead 与 org_admin。
+
+resource: opportunity
+policy_version: "2026-11-27"
+
+roles:
+
+  org_admin:
+    label: 组织管理员
+    site_scope: all_in_org
+    owner_scope: all
+    stage_in: null
+    actions:
+      read: true
+      write: true
+      duplicate_check: true
+      advance_stage:
+        as_owner: true
+        by_role: false
+      force_create: true
+      delete: true
+      merge: true
+    amounts:
+      visible: true
+      null_fields: []
+      amount_hidden_flag: false
+
+  ops_manager:
+    label: 运营经理
+    site_scope: own_sites
+    owner_scope: all
+    stage_in: null
+    actions:
+      read: true
+      write: true
+      duplicate_check: true
+      advance_stage:
+        as_owner: true
+        by_role: false
+      force_create: false
+      delete: false
+      merge: false
+    amounts:
+      visible: true
+      null_fields: []
+      amount_hidden_flag: false
+
+  sales_lead:
+    label: 销售主管
+    site_scope: own_sites
+    owner_scope: all
+    stage_in: null
+    actions:
+      read: true
+      write: true
+      duplicate_check: true
+      advance_stage:
+        as_owner: true
+        by_role: true
+      force_create: true
+      delete: true
+      merge: true
+    amounts:
+      visible: true
+      null_fields: []
+      amount_hidden_flag: false
+
+  sales:
+    label: 招商业务员
+    site_scope: own_sites
+    owner_scope: own
+    stage_in: null
+    actions:
+      read: true
+      write: true
+      duplicate_check: true
+      advance_stage:
+        as_owner: true
+        by_role: false
+      force_create: false
+      delete: false
+      merge: false
+    amounts:
+      visible: true
+      null_fields: []
+      amount_hidden_flag: false
+
+  finance:
+    label: 财务
+    site_scope: own_sites
+    owner_scope: all
+    stage_in: [won]
+    actions:
+      read: true
+      write: false
+      duplicate_check: true
+      advance_stage:
+        as_owner: false
+        by_role: false
+      force_create: false
+      delete: false
+      merge: false
+    amounts:
+      visible: true
+      null_fields: []
+      amount_hidden_flag: false
+
+  viewer:
+    label: 只读观察者
+    site_scope: own_sites
+    owner_scope: all
+    stage_in: null
+    actions:
+      read: true
+      write: false
+      duplicate_check: true
+      advance_stage:
+        as_owner: false
+        by_role: false
+      force_create: false
+      delete: false
+      merge: false
+    amounts:
+      visible: false
+      null_fields: [expected_first_year_amount_fen, weighted_amount_fen]
+      amount_hidden_flag: true
+
+# 撞单检查的字段投影（按角色裁剪），规则原文：
+#   对 sales 只返回撞单商机的 id、stage 与负责人，不返回金额与空间需求。
+duplicate_check_projection:
+  minimal_roles: [sales]          # 走最小投影的角色
+  minimal_fields: [id, stage, owner_id, owner_name]
+  full_fields: [id, stage, owner_id, owner_name, site_id,
+                expected_first_year_amount_fen, weighted_amount_fen, space_requirement]
+
+# 阶段流转图（推进接口只接受下列有向边）
+stage_graph:
+  new: [qualified, lost]
+  qualified: [proposal, lost]
+  proposal: [won, lost]
+  won: []
+  lost: [qualified]
