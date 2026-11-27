@@ -1,0 +1,56 @@
+# 可见范围矩阵 —— 本单规则的唯一真源。
+#
+# 改这个文件即改行为：代码里没有「哪个岗位不能看哪类」的硬编码分支。
+# 校验规则：每个岗位 rank 必须是正整数且互不相同；每个类别 min_rank 必须命中某个岗位 rank。
+version: "2026-11-27"
+
+# 员工岗位（5 个）。rank 越大权限越高。
+staff_roles:
+  staff:
+    rank: 1
+    label: 普通员工
+  senior_staff:
+    rank: 2
+    label: 高级员工
+  supervisor:
+    rank: 3
+    label: 主管
+  site_manager:
+    rank: 4
+    label: 会所负责人
+  org_admin:
+    rank: 5
+    label: 平台管理员
+
+# 知识类别（6 个）。min_rank = 能看见该类内容的最低岗位层级。
+# 「价格与政策类只对主管及以上开放」→ policy / pricing 的 min_rank = 3（supervisor）。
+categories:
+  sop:
+    min_rank: 1
+    label: 作业流程
+  training:
+    min_rank: 1
+    label: 培训材料
+  marketing:
+    min_rank: 1
+    label: 市场物料
+  faq:
+    min_rank: 1
+    label: 常见问题
+  policy:
+    min_rank: 3
+    label: 政策制度
+    restricted: true
+  pricing:
+    min_rank: 3
+    label: 价格与报价
+    restricted: true
+
+# 员工上下文可见的 audience 取值：internal 与 member 都在员工可见范围内。
+staff_audiences: [internal, member]
+
+# 会员上下文：只按 audience + 所属空间收窄，不按岗位/类别收窄。
+# （「价格与政策只对主管及以上」是员工侧规则；会员端看到的是对外口径。）
+member_context:
+  audiences: [member]
+  categories: [sop, training, marketing, faq, policy, pricing]
