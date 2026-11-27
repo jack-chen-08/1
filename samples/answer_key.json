@@ -532,7 +532,7 @@
    "code": "UNMATCHED_ATTENDEE",
    "file": "activities.csv",
    "rows": [
-    14
+    74
    ],
    "field": "attendee_mobile",
    "detail": "参与人不在名册：欧阳锋 / 13100007777"
@@ -541,7 +541,7 @@
    "code": "UNMATCHED_ATTENDEE",
    "file": "activities.csv",
    "rows": [
-    335
+    395
    ],
    "field": "attendee_mobile",
    "detail": "参与人不在名册：慕容复 / 13200008888"
@@ -550,7 +550,7 @@
    "code": "UNMATCHED_ATTENDEE",
    "file": "activities.csv",
    "rows": [
-    704
+    764
    ],
    "field": "attendee_mobile",
    "detail": "参与人不在名册：独孤求败 / 13300009999"
@@ -559,7 +559,7 @@
    "code": "MIXED_DATE_FORMAT",
    "file": "activities.csv",
    "rows": [
-    224
+    284
    ],
    "field": "session_date",
    "detail": "非 ISO 日期：2024/05/01"

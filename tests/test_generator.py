@@ -102,7 +102,11 @@ def test_volume(samples):
     assert len(data["contracts"]) == 165  # 160 + 5 行重复
     assert len(data["leases"]) == 140
     assert len(data["units"]) == 180
-    assert len(data["activities"]) == 900
+    assert len(data["activities"]) == 960
+    sess = [a for a in data["activities"] if a["record_type"] == "session"]
+    part = [a for a in data["activities"] if a["record_type"] == "participant"]
+    assert len(sess) == 60, "场次形态应为 60 行，实为 %d" % len(sess)
+    assert len(part) == 900, "参与人形态应为 900 行，实为 %d" % len(part)
     assert len({a["session_id"] for a in data["activities"]}) == 60
     assert len(data["interactions"]) == 1500
 
@@ -131,3 +135,31 @@ def test_ac3_phone_exclusions_are_registered(samples):
     for i, r in enumerate(rows, start=2):
         if i in violations:
             assert not pat.match(r["mobile"]), "第 %d 行被登记为缺陷，却符合严格规则" % i
+
+
+def test_activities_two_forms_in_one_file(samples):
+    """需求「场次形态 60 场、参与人形态 900 行」：同一 activities.csv 内两种 record_type，字段不串。"""
+    folder, _ = samples
+    with open(os.path.join(folder, "activities.csv"), encoding="utf-8", newline="") as f:
+        rows = [r for r in csv.DictReader(f) if any((v or "").strip() for v in r.values())]
+    sess = [r for r in rows if r["record_type"] == "session"]
+    part = [r for r in rows if r["record_type"] == "participant"]
+    assert len(sess) == 60, "场次形态应为 60 行，实为 %d" % len(sess)
+    assert len(part) == 900, "参与人形态应为 900 行，实为 %d" % len(part)
+    assert all(not r["attendee_name"] and not r["attendee_mobile"] and not r["checkin_at"] for r in sess)
+    assert all(r["attendee_name"] and r["attendee_mobile"] and r["checkin_at"] for r in part)
+    assert {r["session_id"] for r in sess} == {r["session_id"] for r in part}
+
+
+def test_default_seed_equals_explicit_20260101(tmp_path):
+    """省略 --seed 时默认就是 20260101：默认跑与显式 --seed 20260101 逐格一致。"""
+    a = tmp_path / "default"
+    b = tmp_path / "explicit"
+    gen.main(["--out", str(a)])
+    gen.main(["--out", str(b), "--seed", "20260101"])
+    for name in ("members.csv", "contracts.csv", "unit_inventory.csv", "activities.csv", "interactions.csv"):
+        assert (a / name).read_bytes() == (b / name).read_bytes(), name
+    from openpyxl import load_workbook
+    wa = load_workbook(str(a / "leases.xlsx"), data_only=True).active
+    wb = load_workbook(str(b / "leases.xlsx"), data_only=True).active
+    assert [list(r) for r in wa.iter_rows(values_only=True)] == [list(r) for r in wb.iter_rows(values_only=True)]

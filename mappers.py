@@ -383,7 +383,7 @@ def validate_leases(path: str, file: str = "leases.xlsx") -> List[Issue]:
 
 
 def load_activities(path: str) -> Tuple[List[Tuple[int, Dict[str, str]]], List[Issue]]:
-    _, rows, struct_issues = read_csv(path, expect_first_col="session_id")
+    _, rows, struct_issues = read_csv(path, expect_first_col="record_type")
     return rows, struct_issues
 
 
@@ -391,6 +391,9 @@ def validate_activities(path: str, master_emails: Set[str], master_pairs: Set[Tu
              file: str = "activities.csv") -> List[Issue]:
     rows, issues = load_activities(path)
     for rn, r in rows:
+        # 场次形态行（record_type=session）没有人，跳过参与人匹配；参与人形态行才校验
+        if (r.get("record_type") or "").strip() == "session":
+            continue
         email = (r.get("attendee_email") or "").strip().lower()
         pair = ((r.get("attendee_name") or "").strip(), (r.get("attendee_mobile") or "").strip())
         if email in master_emails or pair in master_pairs:

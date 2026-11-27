@@ -15,7 +15,7 @@
 | `contracts.csv` | 165 行 | 合同台账 160 份 + 5 行预埋重复行；文件第 1 行为标题、第 2 行为空白（模拟业务系统导出脏格式） |
 | `leases.xlsx` | 140 行 | 租约台账；含 **真实合并单元格**（xlsx 才能承载"合并"这一物理特征） |
 | `unit_inventory.csv` | 180 行 | 单元清单，干净基线，不含预埋缺陷 |
-| `activities.csv` | 900 行 | 活动记录，覆盖 60 场（60 场次 × 15 名参与人） |
+| `activities.csv` | 960 行 = 60 行场次形态 + 900 行参与人形态 | 活动记录；同表两种形态由 `record_type`（`session` / `participant`）区分，场次行带场次字段、参与人行带人名字段，互不串列 |
 | `interactions.csv` | 1500 行 | 互动记录，**GB18030 编码**（模拟老系统导出），数据区中部有 1 行空白 |
 | `answer_key.json` | 69 条 | 预埋缺陷答案文件：代码 / 文件 / 物理行号 / 字段 / 说明，另有按代码汇总的 counts |
 
@@ -151,4 +151,18 @@ python -m pytest tests -v
 python make_evidence.py
 ```
 
-预期输出：`check_samples.py` 打印 17 类逐项「答案 / 检出」表并以 `结论：全部命中且无误报（AC4 达成）` 结束；`pytest` 输出 `10 passed`。
+预期输出：`check_samples.py` 打印 17 类逐项「答案 / 检出」表并以 `结论：全部命中且无误报（AC4 达成）` 结束；`pytest` 输出 `13 passed`。
+
+**默认 seed 是脚本常量，不是隐含前提**：`DEFAULT_SEED = 20260101`，`--seed` 的 argparse 默认值即取它，
+因此 `python gen_import_samples.py --out samples`（不传 `--seed`）与 `--seed 20260101` 产物逐格一致；
+该等价性由 `tests/test_generator.py::test_default_seed_equals_explicit_20260101` 断言（CSV 比字节、XLSX 比单元格值）。
+
+## 9. 公开仓库边界（为什么样例数据与 answer_key 在库里）
+
+- 本单交付物本身就是**样例数据文件 + 答案文件**，因此它们必须入库；不能加进 `.gitignore`，否则交付物缺失。
+- 库内数据 100% 虚构且可自证：企业名全带「示例」、手机号中间 4 位固定 `0000`、邮箱 `@example.com`/`@example.net`、
+  信用代码按 GB 32100 算法生成、正文证件号统一 `999999`+`19000101`（`999999` 非真实行政区划码）。
+  仓库内不含任何真实名单、真实号码或可定位到自然人的字段。
+- 库内不含任何凭据：`.gitignore` 排除 `__pycache__/`、`*.pyc`、`.pytest_cache/`、`.venv/`、`venv/`、`tmp/`、`.DS_Store`；
+  代码与数据中无 token / 密钥 / 口令，`requirements.txt` 仅 `openpyxl` 与 `pytest` 两个公开包。
+- `answer_key.json` 是需求明确要求的交付物（每个预埋缺陷的来源 / 行号 / 字段 / 问题代码），属于**测试夹具**而非生产数据。

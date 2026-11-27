@@ -11,7 +11,7 @@ gen_import_samples.py —— 会员空间平台「历史数据清洗与导入」
     contracts.csv      合同台账 160 份（第 1 行标题、第 2 行空白，模拟导出脏格式）
     leases.xlsx        租约台账 140 条（含真实合并单元格）
     unit_inventory.csv 单元清单 180 个单元
-    activities.csv     活动记录 900 行（覆盖 60 场）
+    activities.csv     活动记录 960 行 = 60 行场次形态 + 900 行参与人形态（record_type 区分）
     interactions.csv   互动记录 1500 条（GB18030）
     answer_key.json    预埋缺陷答案文件（来源 / 行号 / 字段 / 预期问题代码）
 
@@ -58,8 +58,8 @@ CONTRACTS_COLS = ["contract_id", "member_id", "company_name", "credit_code", "am
 LEASES_COLS = ["lease_id", "unit_id", "site_id", "member_id", "company_name", "area_sqm",
                "start_date", "end_date", "rent_fen", "renew_from", "status"]
 UNITS_COLS = ["unit_id", "site_id", "unit_name", "area_sqm", "status"]
-ACTIVITIES_COLS = ["session_id", "session_date", "topic", "attendee_name", "attendee_mobile",
-                   "attendee_email", "checkin_at", "source"]
+ACTIVITIES_COLS = ["record_type", "session_id", "session_date", "topic", "attendee_name",
+                   "attendee_mobile", "attendee_email", "checkin_at", "source"]
 INTERACTIONS_COLS = ["interaction_id", "member_id", "company_name", "channel", "occurred_at", "content"]
 
 CONTRACTS_PREAMBLE = [["合同台账导出（示例数据）"], [""]]
@@ -183,12 +183,28 @@ def build_base(rng: random.Random):
             "status": rng.choice(["active", "active", "active", "ended"]),
         })
 
-    activities: List[Dict[str, Any]] = []
+    # 活动记录两种形态同表：先 60 行场次形态（record_type=session），再 900 行参与人形态
+    # （record_type=participant）。这样既满足「5 个样例文件」的交付口径，也满足
+    # 需求里「场次形态 60 场、参与人形态 900 行」的两种形态要求。
+    sessions: List[Dict[str, Any]] = []
+    participants: List[Dict[str, Any]] = []
     for s in range(60):
         day = date(2024, 3, 1) + timedelta(days=s * 5)
+        sessions.append({
+            "record_type": "session",
+            "session_id": "S%03d" % (s + 1),
+            "session_date": day.isoformat(),
+            "topic": TOPICS[s % len(TOPICS)],
+            "attendee_name": "",
+            "attendee_mobile": "",
+            "attendee_email": "",
+            "checkin_at": "",
+            "source": rng.choice(["报名链接", "现场登记", "邀请"]),
+        })
         for p in rng.sample(range(len(contacts)), 15):
             ct = contacts[p]
-            activities.append({
+            participants.append({
+                "record_type": "participant",
                 "session_id": "S%03d" % (s + 1),
                 "session_date": day.isoformat(),
                 "topic": TOPICS[s % len(TOPICS)],
@@ -198,6 +214,8 @@ def build_base(rng: random.Random):
                 "checkin_at": (datetime(2024, 3, 1, 9, 0) + timedelta(days=s * 5, minutes=rng.randrange(0, 180))).strftime("%Y-%m-%d %H:%M"),
                 "source": rng.choice(["报名链接", "现场登记", "邀请"]),
             })
+
+    activities: List[Dict[str, Any]] = sessions + participants
 
     interactions: List[Dict[str, Any]] = []
     for i in range(1500):
@@ -331,15 +349,17 @@ def build(seed: int = DEFAULT_SEED) -> Dict[str, Any]:
         note("MIXED_DATE_FORMAT", "leases.xlsx", [lrow(idx)], "start_date", "非 ISO 日期：%s" % v)
 
     # ---- activities.csv ----
+    # 前 60 行是场次形态，参与人形态从下标 60 起；缺陷一律落在参与人行上，故 +ACTSESS_OFF。
+    ACTSESS_OFF = 60
     for idx, nm, mob in ((12, "欧阳锋", "13100007777"), (333, "慕容复", "13200008888"), (701, "独孤求败", "13300009999")):
-        activities[idx]["attendee_name"] = nm
-        activities[idx]["attendee_mobile"] = mob
-        activities[idx]["attendee_email"] = "ghost%d@example.net" % idx
-        note("UNMATCHED_ATTENDEE", "activities.csv", [arow(idx)], "attendee_mobile",
+        activities[ACTSESS_OFF + idx]["attendee_name"] = nm
+        activities[ACTSESS_OFF + idx]["attendee_mobile"] = mob
+        activities[ACTSESS_OFF + idx]["attendee_email"] = "ghost%d@example.net" % idx
+        note("UNMATCHED_ATTENDEE", "activities.csv", [arow(ACTSESS_OFF + idx)], "attendee_mobile",
              "参与人不在名册：%s / %s" % (nm, mob))
 
-    activities[222]["session_date"] = "2024/05/01"
-    note("MIXED_DATE_FORMAT", "activities.csv", [arow(222)], "session_date", "非 ISO 日期：2024/05/01")
+    activities[ACTSESS_OFF + 222]["session_date"] = "2024/05/01"
+    note("MIXED_DATE_FORMAT", "activities.csv", [arow(ACTSESS_OFF + 222)], "session_date", "非 ISO 日期：2024/05/01")
     note("BLANK_ROW", "activities.csv", [row_of(ACTIVITIES_BLANK_AFTER, 1) + 1], "-", "数据区中间的空行")
 
     # ---- interactions.csv ----

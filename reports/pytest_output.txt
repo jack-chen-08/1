@@ -3,21 +3,23 @@ platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/ubuntuuser
 cachedir: .pytest_cache
 rootdir: /home/ubuntuuser/work/3104-import-sample-generator
 plugins: anyio-4.13.0
-collecting ... collected 11 items
+collecting ... collected 13 items
 
-tests/test_answer_key.py::test_readme_counts_match_answer_key PASSED     [  9%]
-tests/test_answer_key.py::test_every_defect_has_row_and_field PASSED     [ 18%]
-tests/test_answer_key.py::test_ac4_mappers_hit_all_and_no_false_positive PASSED [ 27%]
-tests/test_answer_key.py::test_error_level_issues_only_in_answer_key PASSED [ 36%]
-tests/test_generator.py::test_ac1_same_seed_identical_cells PASSED       [ 45%]
-tests/test_generator.py::test_ac1_different_seed_differs PASSED          [ 54%]
-tests/test_generator.py::test_ac3_company_names_all_fiction PASSED       [ 63%]
-tests/test_generator.py::test_ac3_mobile_mid_four_zeros PASSED           [ 72%]
-tests/test_generator.py::test_ac3_emails_fiction_domain PASSED           [ 81%]
-tests/test_generator.py::test_volume PASSED                              [ 90%]
-tests/test_generator.py::test_ac3_phone_exclusions_are_registered PASSED [100%]
+tests/test_answer_key.py::test_readme_counts_match_answer_key PASSED     [  7%]
+tests/test_answer_key.py::test_every_defect_has_row_and_field PASSED     [ 15%]
+tests/test_answer_key.py::test_ac4_mappers_hit_all_and_no_false_positive PASSED [ 23%]
+tests/test_answer_key.py::test_error_level_issues_only_in_answer_key PASSED [ 30%]
+tests/test_generator.py::test_ac1_same_seed_identical_cells PASSED       [ 38%]
+tests/test_generator.py::test_ac1_different_seed_differs PASSED          [ 46%]
+tests/test_generator.py::test_ac3_company_names_all_fiction PASSED       [ 53%]
+tests/test_generator.py::test_ac3_mobile_mid_four_zeros PASSED           [ 61%]
+tests/test_generator.py::test_ac3_emails_fiction_domain PASSED           [ 69%]
+tests/test_generator.py::test_volume PASSED                              [ 76%]
+tests/test_generator.py::test_ac3_phone_exclusions_are_registered PASSED [ 84%]
+tests/test_generator.py::test_activities_two_forms_in_one_file PASSED    [ 92%]
+tests/test_generator.py::test_default_seed_equals_explicit_20260101 PASSED [100%]
 
-============================== 11 passed in 1.13s ==============================
+============================== 13 passed in 1.37s ==============================
 
 
 退出码=0
