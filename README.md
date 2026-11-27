@@ -119,3 +119,29 @@ reports/                AC1–AC4 实测输出留档
 - `answer_key.json` 记录的是**物理行号**，插入/删除行会使行号失效，需重新生成而非手改。
 - 租期重叠判定采用闭区间（首尾相接视为重叠），与「同一单元不可同日双租」的业务口径一致。
 - 名册按「行级」记录缺陷：同一企业的多行联系人可能只有一行带脏值（真实导出中即如此），跨行一致性不在本次映射器范围内。
+- 本单交付的是**样例数据文件**，不是数据库表结构，因此未加 `org_id` / `created_by` / `updated_at` / `deleted_at` 等平台审计字段；字段集合按各来源单据的真实导出列设计（金额均已按「分」存整数：`amount_fen` / `rent_fen`）。
+
+## 8. 运行与测试方法
+
+环境：Python 3.11+（实测 3.12.13），仅两个依赖。
+
+```bash
+# 1. 安装依赖
+pip install -r requirements.txt
+
+# 2. 生成样例（默认 seed=20260101，输出到 samples/）
+python gen_import_samples.py --out samples
+#    自定义 seed / 输出目录
+python gen_import_samples.py --seed 777 --out /tmp/samples_777
+
+# 3. 五映射器预演：与 answer_key 逐条比对（全部命中且无误报时 exit 0）
+python check_samples.py --samples samples
+
+# 4. 跑 AC1–AC4 断言
+python -m pytest tests -v
+
+# 5. 重新生成 AC1–AC4 证据报告（写 reports/*.md）
+python make_evidence.py
+```
+
+预期输出：`check_samples.py` 打印 17 类逐项「答案 / 检出」表并以 `结论：全部命中且无误报（AC4 达成）` 结束；`pytest` 输出 `10 passed`。
